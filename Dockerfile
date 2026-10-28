@@ -29,5 +29,5 @@ COPY --from=builder /app/build ./build
 
 COPY --from=builder /app/public ./public
 
-EXPOSE 1122
-CMD ["node", "build/index.js", "--transport", "streamable", "--host", "0.0.0.0", "--port", "1122", "--endpoint", "/mcp"]
+EXPOSE 3000
+CMD ["node", "build/index.js", "--transport", "streamable", "--host", "0.0.0.0", "--port", "3000", "--endpoint", "/mcp"]
