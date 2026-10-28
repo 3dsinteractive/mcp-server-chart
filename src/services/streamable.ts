@@ -1,7 +1,7 @@
 import type { Server } from "@modelcontextprotocol/sdk/server/index.js";
 import { StreamableHTTPServerTransport } from "@modelcontextprotocol/sdk/server/streamableHttp.js";
 import cors from "cors";
-import express, { type Request, type Response } from "express";
+import express, { type Express, type Request, type Response } from "express";
 import { logger } from "../utils/logger";
 
 export const startHTTPStreamableServer = async (
@@ -14,6 +14,20 @@ export const startHTTPStreamableServer = async (
   app.use(express.json());
   app.use(cors({ origin: "*", exposedHeaders: ["Mcp-Session-Id"] }));
 
+  registerStreamableEndpoint(app, createServer, endpoint);
+
+  app.listen(port, host, () => {
+    logger.success(
+      `Streamable HTTP Server listening on http://${host}:${port}${endpoint}`,
+    );
+  });
+};
+
+export function registerStreamableEndpoint(
+  app: Express,
+  createServer: () => Server,
+  endpoint = "/mcp",
+): void {
   app.post(endpoint, async (req: Request, res: Response) => {
     // In stateless mode, create a new transport for each request to prevent
     // request ID collisions. Different clients may use the same JSON-RPC request IDs,
@@ -45,10 +59,4 @@ export const startHTTPStreamableServer = async (
       }
     }
   });
-
-  app.listen(port, host, () => {
-    logger.success(
-      `Streamable HTTP Server listening on http://${host}:${port}${endpoint}`,
-    );
-  });
-};
+}

@@ -1,6 +1,7 @@
 #!/usr/bin/env node
 import { parseArgs } from "node:util";
 import {
+  runBothServers,
   runHTTPStreamableServer,
   runSSEServer,
   runStdioServer,
@@ -43,9 +44,9 @@ if (values.help) {
 MCP Server Chart CLI
 
 Options:
-  --transport, -t  Specify the transport protocol: "stdio", "sse", or "streamable" (default: "stdio")
-  --host, -h       Specify the host for SSE or streamable transport (default: localhost)
-  --port, -p       Specify the port for SSE or streamable transport (default: 1122)
+  --transport, -t  Specify the transport protocol: "stdio", "sse", "streamable", or "both" (default: "stdio")
+  --host, -h       Specify the host for HTTP transports (default: localhost)
+  --port, -p       Specify the port for HTTP transports (default: 1122)
   --endpoint, -e   Specify the endpoint for the transport:
                    - For SSE: default is "/sse"
                    - For streamable: default is "/mcp"
@@ -71,6 +72,11 @@ if (transport === "sse") {
   const endpoint = values.endpoint || "/mcp";
   const host = values.host || "localhost";
   runHTTPStreamableServer(host, port, endpoint).catch(console.error);
+} else if (transport === "both") {
+  logger.setIsStdio(false);
+  const port = Number.parseInt(values.port as string, 10);
+  const host = values.host || "localhost";
+  runBothServers(host, port).catch(console.error);
 } else {
   logger.setIsStdio(true);
   runStdioServer().catch(console.error);

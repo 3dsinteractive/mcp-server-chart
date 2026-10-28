@@ -1,6 +1,6 @@
 import type { Server } from "@modelcontextprotocol/sdk/server/index.js";
 import { SSEServerTransport } from "@modelcontextprotocol/sdk/server/sse.js";
-import express, { type Request, type Response } from "express";
+import express, { type Express, type Request, type Response } from "express";
 import { logger } from "../utils/logger";
 
 export const startSSEMcpServer = async (
@@ -12,6 +12,18 @@ export const startSSEMcpServer = async (
   const app = express();
   app.use(express.json());
 
+  registerSSEEndpoints(app, createServer, endpoint);
+
+  app.listen(port, host, () => {
+    logger.success(`SSE Server listening on http://${host}:${port}${endpoint}`);
+  });
+};
+
+export function registerSSEEndpoints(
+  app: Express,
+  createServer: () => Server,
+  endpoint = "/sse",
+): void {
   const connections: Record<string, SSEServerTransport> = {};
 
   app.get(endpoint, async (req: Request, res: Response) => {
@@ -50,8 +62,4 @@ export const startSSEMcpServer = async (
       if (!res.headersSent) res.status(500).send("Error handling request");
     }
   });
-
-  app.listen(port, host, () => {
-    logger.success(`SSE Server listening on http://${host}:${port}${endpoint}`);
-  });
-};
+}

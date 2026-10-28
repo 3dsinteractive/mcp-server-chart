@@ -29,7 +29,5 @@ COPY --from=builder /app/build ./build
 
 COPY --from=builder /app/public ./public
 
-# If use docker-compose to execute this Dockerfile, this EXPOSE is a good choice.
 EXPOSE 1122
-# Command will be provided by smithery.yaml
-CMD ["node", "build/index.js", "-t", "streamable"]
+CMD ["node", "build/index.js", "--transport", "streamable", "--host", "0.0.0.0", "--port", "1122", "--endpoint", "/mcp"]

@@ -5,6 +5,7 @@ import {
 } from "@modelcontextprotocol/sdk/types.js";
 import * as Charts from "./charts";
 import {
+  startBothMcpServers,
   startHTTPStreamableServer,
   startSSEMcpServer,
   startStdioMcpServer,
@@ -110,4 +111,12 @@ export async function runHTTPStreamableServer(
   endpoint = "/mcp",
 ): Promise<void> {
   await startHTTPStreamableServer(createServer, endpoint, port, host);
+}
+
+/** Runs SSE and Streamable HTTP on the same port. */
+export async function runBothServers(
+  host = "localhost",
+  port = 1122,
+): Promise<void> {
+  await startBothMcpServers(createServer, port, host);
 }
