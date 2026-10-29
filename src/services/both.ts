@@ -11,11 +11,11 @@ export async function startBothMcpServers(
   host = "localhost",
 ): Promise<void> {
   const app = express();
-  app.use(express.json());
   app.use(cors({ origin: "*", exposedHeaders: ["Mcp-Session-Id"] }));
 
+  registerStreamableEndpoint(app);
+  app.use(express.json());
   registerSSEEndpoints(app, createServer);
-  registerStreamableEndpoint(app, createServer);
 
   app.listen(port, host, () => {
     logger.success(`SSE Server listening on http://${host}:${port}/sse`);

@@ -110,7 +110,7 @@ export async function runHTTPStreamableServer(
   port = 1122,
   endpoint = "/mcp",
 ): Promise<void> {
-  await startHTTPStreamableServer(createServer, endpoint, port, host);
+  await startHTTPStreamableServer(endpoint, port, host);
 }
 
 /** Runs SSE and Streamable HTTP on the same port. */
